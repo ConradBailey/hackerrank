@@ -1,18 +1,19 @@
-FLAGS=-std=gnu++14 -O2 -Wall -Wextra -Wpedantic -Wfatal-errors
+FLAGS=-std=gnu++14 -O2 -g -Wall -Wextra -Wpedantic -Wfatal-errors
 
-all: answer prob.pdf tests
+all: answer prob.pdf input output
 
 prob.pdf:
 	curl -s 'https://www.hackerrank.com/rest/contests/master/challenges/$(PROBLEM)/download_pdf?language=English' -o $@
 
-tests: input output
-
-input:
+input output:
 	curl -s 'https://www.hackerrank.com/rest/contests/master/challenges/$(PROBLEM)/download_testcases' -o tests.zip
 	unzip tests.zip
 	rm tests.zip
+	@# Add a newline to outputs if it doesn't already exist
+	@for OFILE in output/* ; do sed -i -e '$$a\' $$OFILE ; done
 
-output: input
+answer.cpp:
+	echo "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n}" > answer.cpp
 
 answer: answer.cpp
 	$(CXX) $(FLAGS) $< -o $@
