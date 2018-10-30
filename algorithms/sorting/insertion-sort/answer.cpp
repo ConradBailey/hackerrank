@@ -4,11 +4,19 @@ using namespace std;
 // struct BST {
 // 	struct Node {
 // 		Node(int val) : val(val) {}
+// 		~Node() {
+// 			delete left;
+// 			delete right;
+// 		}
 // 		int val;
 // 		size_t size = 1;
 // 		Node *left = nullptr;
 // 		Node *right = nullptr;
 // 	};
+
+// 	~BST() {
+// 		delete root;
+// 	}
 
 // 	void insert(int val) {
 // 		Node **p{&root};
@@ -37,12 +45,16 @@ using namespace std;
 
 struct RB_Tree {
 	struct Node {
-		enum Color : bool {Red, Black};
+		enum Color : bool { Red, Black };
 
-		Node(int val, Node::Color color,
-				 Node *parent = nullptr, Node *left = nullptr, Node *right = nullptr) :
-			val(val), color(color), parent(parent), left(left), right(right)
-		{}
+		Node(int val, Node::Color color, Node *parent = nullptr,
+				 Node *left = nullptr, Node *right = nullptr)
+				: val(val), color(color), parent(parent), left(left), right(right) {}
+
+		~Node() {
+			delete left;
+			delete right;
+		}
 
 		int val;
 		Node::Color color;
@@ -52,7 +64,9 @@ struct RB_Tree {
 		size_t size = 1;
 	};
 
-	enum Direction {Left, Right};
+	enum Direction { Left, Right };
+
+	~RB_Tree() { delete root; }
 
 	void rotate(Node *x, Direction d) {
 		Node *&x_child{(d == Right) ? x->left : x->right};
@@ -60,7 +74,8 @@ struct RB_Tree {
 		Node *&y_child{(d == Right) ? y->right : y->left};
 
 		y->parent = x->parent;
-		if (x->parent == nullptr) root = y;
+		if (x->parent == nullptr)
+			root = y;
 		else {
 			Node *&k = (x == x->parent->left) ? x->parent->left : x->parent->right;
 			k = y;
@@ -108,13 +123,11 @@ struct RB_Tree {
 			u->color = Node::Color::Black;
 			g->color = Node::Color::Red;
 			repair(g);
-		}
-		else {
+		} else {
 			if (g->left && c == g->left->right) {
 				rotate(p, Direction::Left);
 				c = c->left;
-			}
-			else if (g->right && c == g->right->left) {
+			} else if (g->right && c == g->right->left) {
 				rotate(p, Direction::Right);
 				c = c->right;
 			}
@@ -132,18 +145,17 @@ struct RB_Tree {
 			if (val < p->val) {
 				count += 1 + (p->right ? p->right->size : 0);
 				p = p->left;
-			}
-			else {
+			} else {
 				p = p->right;
 			}
 		}
 		return count;
 	}
 
- 	Node *root = nullptr;
+	Node *root = nullptr;
 };
 
-size_t count_shifts(const vector<int>& v) {
+size_t count_shifts(const vector<int> &v) {
 	size_t total_swaps{0};
 	RB_Tree bst;
 	for (size_t i{0}; i < v.size(); ++i) {
@@ -154,12 +166,15 @@ size_t count_shifts(const vector<int>& v) {
 }
 
 int main() {
-	int t; cin >> t;
+	int t;
+	cin >> t;
 
 	while (t--) {
-		int n; cin >> n;
+		int n;
+		cin >> n;
 		vector<int> arr(n);
-		for (int i{0}; i < n; ++i) cin >> arr[i];
+		for (int i{0}; i < n; ++i)
+			cin >> arr[i];
 		cout << count_shifts(arr) << endl;
 	}
 }
