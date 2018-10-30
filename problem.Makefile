@@ -21,7 +21,7 @@ answer: answer.cpp
 check: input output answer
 	@for PROBNUM in $$(ls input | grep -o -E [[:digit:]]+) ; do \
 		./answer < input/input$$PROBNUM.txt > /tmp/temp.ans ; \
-	  if ! diff /tmp/temp.ans output/output$$PROBNUM.txt > /dev/null ; then \
+	  if ! diff -Z /tmp/temp.ans output/output$$PROBNUM.txt > /dev/null ; then \
 		  echo "Failed problem $$PROBNUM" ; \
 	  fi \
 	done
