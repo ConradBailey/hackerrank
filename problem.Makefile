@@ -9,6 +9,8 @@ input output:
 	curl -s 'https://www.hackerrank.com/rest/contests/master/challenges/$(PROBLEM)/download_testcases' -o tests.zip
 	unzip tests.zip
 	rm tests.zip
+
+output_endls: output
 	@# Add a newline to outputs if it doesn't already exist
 	@for OFILE in output/* ; do sed -i -e '$$a\' $$OFILE ; done
 
@@ -18,7 +20,7 @@ answer.cpp:
 answer: answer.cpp
 	$(CXX) $(FLAGS) $< -o $@
 
-check: input output answer
+check: input output_endls answer
 	@for PROBNUM in $$(ls input | grep -o -E [[:digit:]]+) ; do \
 		./answer < input/input$$PROBNUM.txt > /tmp/temp.ans ; \
 	  if ! diff -Z /tmp/temp.ans output/output$$PROBNUM.txt > /dev/null ; then \
