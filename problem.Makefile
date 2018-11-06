@@ -22,7 +22,7 @@ answer: answer.cpp
 
 check: input output_endls answer
 	@for PROBNUM in $$(ls input | grep -o -E [[:digit:]]+) ; do \
-		./answer < input/input$$PROBNUM.txt > /tmp/temp.ans ; \
+		./answer < input/input$$PROBNUM.txt 2>/dev/null > /tmp/temp.ans ; \
 	  if ! diff -Z /tmp/temp.ans output/output$$PROBNUM.txt > /dev/null ; then \
 		  echo "Failed problem $$PROBNUM" ; \
 	  fi \
